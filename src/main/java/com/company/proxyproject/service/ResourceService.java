@@ -3,6 +3,7 @@ package com.company.proxyproject.service;
 import com.company.proxyproject.common.MessageSingleton;
 import com.company.proxyproject.constants.AppConstants;
 import com.company.proxyproject.dto.request.GetHistory;
+import com.company.proxyproject.dto.response.GetCurrentsResponse;
 import com.company.proxyproject.dto.response.GetHistoryResponse;
 import com.company.proxyproject.entity.Field;
 import com.company.proxyproject.entity.Station;
@@ -18,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -69,12 +72,16 @@ public class ResourceService {
             return messageSingleton.noDataFound();
         }
         HttpHeaders httpHeaders = new HttpHeaders();
-        HashMap<String, String> map = new HashMap<>();
         httpHeaders.set(AppConstants.TOKEN, propertyService.getToken());
         HttpEntity<Map<String, Object>> http = new HttpEntity<>(httpHeaders);
-        String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_FIELD_ID + "/" + fieldOpt.get().getApiFieldId();
-        ResponseEntity<? extends HashMap> response = restTemplate.exchange(url, HttpMethod.GET, http, map.getClass());
-        Object data = response.getBody().get("data");
+        String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_FIELD_ID + fieldOpt.get().getApiFieldId();
+        ResponseEntity<GetCurrentsResponse> response = restTemplate.exchange(url, HttpMethod.GET, http, GetCurrentsResponse.class);
+        List<GetCurrentsResponse.Body> data = Objects.requireNonNull(response.getBody()).getData();
+        data.removeIf(body -> {
+            Optional<Station> stationOpt = stationRepository.findByApiId(body.getId());
+            stationOpt.ifPresent(station -> body.setId(station.getObjectId()));
+            return stationOpt.isEmpty();
+        });
         return messageSingleton.success(data);
     }
 
