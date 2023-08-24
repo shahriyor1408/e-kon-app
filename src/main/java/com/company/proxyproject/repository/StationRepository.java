@@ -16,4 +16,8 @@ public interface StationRepository extends JpaRepository<Station, Long> {
 
     @Query("from Station where apiStationId = :apiStationId or objectId = :objectId")
     Optional<Station> findByStationIdOrObjectId(Long apiStationId, Long objectId);
+
+    @Query("from Station s where s.objectId=:objectId")
+    Optional<Station> findByObjectId(Long objectId);
+
 }
