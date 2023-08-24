@@ -102,6 +102,7 @@ public class AuthService {
         return messageSingleton.success(new UserDto(userOpt.get()));
     }
 
+    @Transactional
     public ResponseEntity<?> register(RegisterDto registerDto, BindingResult result) throws MethodArgumentNotValidException {
         if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(null, result);

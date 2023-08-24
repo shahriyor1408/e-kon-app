@@ -27,4 +27,8 @@ public class StationCreateDto {
     @NotNull(message = "station.objectId.not.blank")
     @JsonProperty("objectId")
     private Long objectId;
+
+    @JsonProperty("fieldId")
+    @NotNull(message = "field.fieldId.not.null")
+    private Long fieldId;
 }

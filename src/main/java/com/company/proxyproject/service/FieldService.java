@@ -84,4 +84,8 @@ public class FieldService {
     public ResponseEntity<?> getAll() {
         return messageSingleton.success(repository.findAll());
     }
+
+    public Field getByObjectId(Long fieldId) {
+        return repository.findByObjectId(fieldId).orElse(null);
+    }
 }

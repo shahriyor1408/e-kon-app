@@ -33,4 +33,8 @@ public class Station extends Auditable {
 
     @Column(name = "object_id", nullable = false)
     private Long objectId;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "field_id", nullable = false)
+    private Field field;
 }
