@@ -70,7 +70,7 @@ public class ResourceService {
         HashMap<String, String> map = new HashMap<>();
         httpHeaders.set(AppConstants.TOKEN, AppConstants.TOKEN_VALUE);
         HttpEntity<Map<String, Object>> http = new HttpEntity<>(httpHeaders);
-        String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_FIELD_ID + fieldOpt.get().getApiFieldId();
+        String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_FIELD_ID+"/" + fieldOpt.get().getApiFieldId();
         ResponseEntity<? extends HashMap> response = restTemplate.exchange(url, HttpMethod.GET, http, map.getClass());
         Object data = response.getBody().get("data");
         return messageSingleton.success(data);
