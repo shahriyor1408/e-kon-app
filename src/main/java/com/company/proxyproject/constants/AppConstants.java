@@ -11,6 +11,6 @@ public interface AppConstants {
 
     String GET_HISTORY = "/getHistory";
 
-    String GET_CURRENT_BY_FIELD_ID = "getCurrentByFieldId";
+    String GET_CURRENT_BY_FIELD_ID = "/getCurrentByFieldId";
 
 }
