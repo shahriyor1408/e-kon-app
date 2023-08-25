@@ -208,3 +208,12 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
+/.idea/.gitignore
+/target/classes/application.properties
+/.idea/compiler.xml
+/.idea/dataSources.xml
+/.idea/encodings.xml
+/.idea/jarRepositories.xml
+/.idea/misc.xml
+/target/classes/META-INF/spring-configuration-metadata.json
+/.idea/vcs.xml

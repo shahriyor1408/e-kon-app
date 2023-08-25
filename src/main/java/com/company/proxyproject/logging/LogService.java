@@ -49,7 +49,7 @@ public class LogService {
         CustomUserDetails user = getCurrentUser();
         final Long userId = Optional.ofNullable(user).map(CustomUserDetails::getId).orElse(0L);
         final String token = request.getHeader(TOKEN);
-        final String ipAddress = request.getHeader("X-Real-IP");
+        final String ipAddress = request.getRemoteAddr();
         final String requestContent = getRequestContent(request);
         final String responseContent = getResponseContent(response);
         //request logging

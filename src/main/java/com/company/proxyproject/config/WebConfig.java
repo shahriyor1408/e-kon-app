@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
@@ -52,5 +53,10 @@ public class WebConfig implements WebMvcConfigurer {
         return webEndpointProperties.getDiscovery().isEnabled() &&
                 (StringUtils.hasText(basePath) ||
                         ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

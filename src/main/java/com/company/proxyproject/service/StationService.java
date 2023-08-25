@@ -46,6 +46,7 @@ public class StationService {
         }
 
         Station station = Station.builder()
+                .name(dto.getName())
                 .apiStationId(dto.getApiStationId())
                 .objectId(dto.getObjectId())
                 .field(field)

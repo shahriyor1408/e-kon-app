@@ -21,7 +21,6 @@ import static com.company.proxyproject.constants.AppConstants.API_VERSION;
 public class ResourceController {
     private final ResourceService resourceService;
 
-
     @PostMapping("/get-history")
     public ResponseEntity<?> getHistory(@Valid @RequestBody GetHistory request) {
         return resourceService.getHistory(request);
@@ -31,5 +30,4 @@ public class ResourceController {
     public ResponseEntity<?> getCurrentsByFieldId(@PathVariable Long id) {
         return resourceService.getCurrentsByFieldId(id);
     }
-
 }

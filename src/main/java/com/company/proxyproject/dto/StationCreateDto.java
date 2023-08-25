@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -19,6 +20,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StationCreateDto {
+
+    @NotNull(message = "station.name.not.notNull")
+    @NotBlank(message = "station.name.not.blank")
+    @JsonProperty("name")
+    private String name;
 
     @NotNull(message = "station.apiStationId.not.blank")
     @JsonProperty("apiStationId")

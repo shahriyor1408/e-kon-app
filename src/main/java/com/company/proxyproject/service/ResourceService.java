@@ -7,9 +7,11 @@ import com.company.proxyproject.dto.response.GetCurrentsResponse;
 import com.company.proxyproject.dto.response.GetHistoryResponse;
 import com.company.proxyproject.entity.Field;
 import com.company.proxyproject.entity.Station;
+import com.company.proxyproject.exception.CustomException;
 import com.company.proxyproject.repository.FieldRepository;
 import com.company.proxyproject.repository.StationRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,8 +34,7 @@ public class ResourceService {
 
     private final FieldRepository fieldRepository;
 
-    private RestTemplate restTemplate = new RestTemplate();
-
+    private final RestTemplate restTemplate;
     private final PropertyService propertyService;
 
     @Transactional
@@ -44,6 +44,22 @@ public class ResourceService {
             return messageSingleton.noDataFound();
         }
         Station station = stationOpt.get();
+        HttpEntity<Map<String, Object>> http = getMapHttpEntity(request, station);
+        try {
+            String url = AppConstants.URL + AppConstants.GET_HISTORY;
+            ResponseEntity<GetCurrentsResponse> response = restTemplate.exchange(url, HttpMethod.PUT, http, GetCurrentsResponse.class);
+            Object data = Objects.requireNonNull(response.getBody()).getData();
+            return messageSingleton.success(GetHistoryResponse.builder()
+                    .objectId(station.getObjectId())
+                    .sensorValues(data)
+                    .build());
+        } catch (Exception e) {
+            throw new CustomException(e.getMessage());
+        }
+    }
+
+    @NotNull
+    private HttpEntity<Map<String, Object>> getMapHttpEntity(GetHistory request, Station station) {
         Map<String, Object> apiRequest = Map.of(
                 "direction", request.getDirection(),
                 "from", request.getFrom(),
@@ -52,17 +68,8 @@ public class ResourceService {
                 "stationId", station.getApiStationId()
         );
         HttpHeaders httpHeaders = new HttpHeaders();
-        HashMap<String, String> map = new HashMap<>();
         httpHeaders.set(AppConstants.TOKEN, propertyService.getToken());
-        HttpEntity<Map<String, Object>> http = new HttpEntity<>(apiRequest, httpHeaders);
-        String url = AppConstants.URL + AppConstants.GET_HISTORY;
-        ResponseEntity<? extends HashMap> response = restTemplate.exchange(url, HttpMethod.PUT, http, map.getClass());
-        Object data = response.getBody().get("data");
-
-        return messageSingleton.success(GetHistoryResponse.builder()
-                .objectId(station.getObjectId())
-                .sensorValues(data)
-                .build());
+        return new HttpEntity<>(apiRequest, httpHeaders);
     }
 
     @Transactional
@@ -74,15 +81,21 @@ public class ResourceService {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(AppConstants.TOKEN, propertyService.getToken());
         HttpEntity<Map<String, Object>> http = new HttpEntity<>(httpHeaders);
-        String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_FIELD_ID + fieldOpt.get().getApiFieldId();
-        ResponseEntity<GetCurrentsResponse> response = restTemplate.exchange(url, HttpMethod.GET, http, GetCurrentsResponse.class);
-        List<GetCurrentsResponse.Body> data = Objects.requireNonNull(response.getBody()).getData();
-        data.removeIf(body -> {
-            Optional<Station> stationOpt = stationRepository.findByApiId(body.getId());
-            stationOpt.ifPresent(station -> body.setId(station.getObjectId()));
-            return stationOpt.isEmpty();
-        });
-        return messageSingleton.success(data);
+        try {
+            String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_FIELD_ID + fieldOpt.get().getApiFieldId();
+            ResponseEntity<GetCurrentsResponse> response = restTemplate.exchange(url, HttpMethod.GET, http, GetCurrentsResponse.class);
+            List<GetCurrentsResponse.Body> data = Objects.requireNonNull(response.getBody()).getData();
+            data.removeIf(body -> {
+                Optional<Station> stationOpt = stationRepository.findByApiId(body.getId());
+                stationOpt.ifPresent(station -> {
+                    body.setId(station.getObjectId());
+                    body.setName(station.getName());
+                });
+                return stationOpt.isEmpty();
+            });
+            return messageSingleton.success(data);
+        } catch (Exception e) {
+            throw new CustomException(e.getMessage());
+        }
     }
-
 }

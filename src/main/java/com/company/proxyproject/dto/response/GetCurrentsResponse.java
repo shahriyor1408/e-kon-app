@@ -28,6 +28,8 @@ public class GetCurrentsResponse {
 
         private Object sensors;
 
+        private String name;
+
     }
 
 }
