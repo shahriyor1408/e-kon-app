@@ -2,6 +2,7 @@ package com.company.proxyproject.service;
 
 import com.company.proxyproject.common.MessageSingleton;
 import com.company.proxyproject.constants.AppConstants;
+import com.company.proxyproject.constants.enums.SensorDirection;
 import com.company.proxyproject.dto.request.GetHistory;
 import com.company.proxyproject.dto.response.GetCurrentsResponse;
 import com.company.proxyproject.dto.response.GetHistoryResponse;
@@ -34,6 +35,7 @@ public class ResourceService {
     private final FieldRepository fieldRepository;
 
     private final RestTemplate restTemplate;
+
     private final PropertyService propertyService;
 
     @Transactional
@@ -46,11 +48,12 @@ public class ResourceService {
         HttpEntity<Map<String, Object>> http = getMapHttpEntity(request, station);
         try {
             String url = AppConstants.URL + AppConstants.GET_HISTORY;
-            ResponseEntity<GetCurrentsResponse> response = restTemplate.exchange(url, HttpMethod.PUT, http, GetCurrentsResponse.class);
+            ResponseEntity<GetHistoryResponse> response = restTemplate.exchange(url, HttpMethod.PUT, http, GetHistoryResponse.class);
             Object data = Objects.requireNonNull(response.getBody()).getData();
             return messageSingleton.success(GetHistoryResponse.builder()
                     .objectId(station.getObjectId())
-                    .sensorValues(data)
+                    .data(data)
+                    .name(station.getName())
                     .build());
         } catch (Exception e) {
             return messageSingleton.operationFailed(e.getLocalizedMessage());
@@ -87,7 +90,11 @@ public class ResourceService {
             data.removeIf(body -> {
                 Optional<Station> stationOpt = stationRepository.findByApiId(body.getId());
                 stationOpt.ifPresent(station -> {
-                    body.setId(station.getObjectId());
+                    body.setObjectId(station.getObjectId());
+                    for (GetCurrentsResponse.Sensor sensor : body.getSensors()) {
+                        sensor.setDirection(SensorDirection.getByValue(sensor.getDirection()).toString());
+                    }
+                    body.setId(null);
                     body.setName(station.getName());
                 });
                 return stationOpt.isEmpty();
@@ -97,4 +104,5 @@ public class ResourceService {
             return messageSingleton.operationFailed(e.getLocalizedMessage());
         }
     }
+
 }

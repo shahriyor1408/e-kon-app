@@ -16,8 +16,10 @@ import java.io.Serializable;
 @Builder
 @ToString
 public class GetHistoryResponse implements Serializable {
-    private Object sensorValues;
+    private Object data;
 
     private Long objectId;
+
+    private String name;
 
 }
