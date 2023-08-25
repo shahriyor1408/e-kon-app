@@ -28,7 +28,7 @@ public class FieldUpdateDto {
     @NotNull(message = "field.apiFieldId.not.null")
     private Long apiFieldId;
 
-    @JsonProperty("objectId")
+    @JsonProperty("fieldId")
     @NotNull(message = "field.objectId.not.null")
     private Long objectId;
 

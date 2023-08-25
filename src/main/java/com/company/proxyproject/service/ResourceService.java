@@ -61,7 +61,7 @@ public class ResourceService {
     @NotNull
     private HttpEntity<Map<String, Object>> getMapHttpEntity(GetHistory request, Station station) {
         Map<String, Object> apiRequest = Map.of(
-                "direction", request.getDirection(),
+                "direction", request.getDirection().getValue(),
                 "from", request.getFrom(),
                 "to", request.getTo(),
                 "type", request.getSensorType(),

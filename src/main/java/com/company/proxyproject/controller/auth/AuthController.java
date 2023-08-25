@@ -1,14 +1,14 @@
 package com.company.proxyproject.controller.auth;
 
 import com.company.proxyproject.dto.auth.LoginDto;
-import com.company.proxyproject.dto.auth.RegisterDto;
 import com.company.proxyproject.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -32,18 +32,18 @@ public class AuthController {
         return authService.login(loginDto);
     }
 
-    @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterDto registerDto, BindingResult result) throws MethodArgumentNotValidException {
-        return authService.register(registerDto, result);
-    }
+//    @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+//    public ResponseEntity<?> register(@Valid @RequestBody RegisterDto registerDto, BindingResult result) throws MethodArgumentNotValidException {
+//        return authService.register(registerDto, result);
+//    }
 
-    @GetMapping("/session-user")
-    public ResponseEntity<?> getSessionUser() {
-        return authService.getSessionUser();
-    }
-
-    @PostMapping(value = "/logout")
-    public ResponseEntity<?> logout() {
-        return authService.logout();
-    }
+//    @GetMapping("/session-user")
+//    public ResponseEntity<?> getSessionUser() {
+//        return authService.getSessionUser();
+//    }
+//
+//    @PostMapping(value = "/logout")
+//    public ResponseEntity<?> logout() {
+//        return authService.logout();
+//    }
 }

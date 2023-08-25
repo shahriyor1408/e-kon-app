@@ -1,6 +1,7 @@
 package com.company.proxyproject.entity;
 
 import com.company.proxyproject.entity.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Station extends Auditable {
     @SequenceGenerator(allocationSize = 1, name = "seq_station_id", sequenceName = "seq_stations_id")
     private Long id;
 
+    @JsonIgnore
     @Column(name = "api_station_id", nullable = false)
     private Long apiStationId;
 
