@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,8 +29,11 @@ import java.util.Optional;
 public class StationService {
 
     private final StationRepository repository;
+
     private final LogService logService;
+
     private final MessageSingleton messageSingleton;
+
     private final FieldService fieldService;
 
     @Transactional
@@ -36,13 +41,13 @@ public class StationService {
         Optional<Station> stationOpt = repository.findByStationIdOrObjectId(dto.getApiStationId(), dto.getObjectId());
         if (stationOpt.isPresent()) {
             logService.logInternal("operation failed due to station found by id: %s".formatted(dto.getApiStationId()), LogType.STATION, "/station/create");
-            return messageSingleton.dataExists();
+            return messageSingleton.dataExists(dto.getApiStationId()+" "+dto.getObjectId());
         }
 
         Field field = fieldService.getByObjectId(dto.getFieldId());
         if (Objects.isNull(field)) {
             logService.logInternal("operation failed due to no field found by id: %s".formatted(dto.getFieldId()), LogType.FIELD, "/field/delete");
-            return messageSingleton.noDataFound();
+            return messageSingleton.noDataFound("field not found by id: "+dto.getFieldId());
         }
 
         Station station = Station.builder()
@@ -92,4 +97,15 @@ public class StationService {
         repository.deleteById(id);
         return messageSingleton.success();
     }
+
+    @Transactional
+    public ResponseEntity<?> createByArray(List<StationCreateDto> dtos) {
+        List<Object> response = new ArrayList<>();
+        for (StationCreateDto dto : dtos) {
+            ResponseEntity<?> responseEntity = create(dto);
+            response.add(responseEntity.getBody());
+        }
+        return messageSingleton.success(response);
+    }
+
 }

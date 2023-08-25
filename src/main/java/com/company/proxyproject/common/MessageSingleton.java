@@ -42,6 +42,10 @@ public class MessageSingleton {
         return prepareResponse(MessageKey.EMAIL_EXISTS, HttpStatus.BAD_REQUEST);
     }
 
+    public ResponseEntity<ResponseData<String>> dataExists(String data) {
+        return prepareResponse(MessageKey.DATA_EXISTS+data, HttpStatus.BAD_REQUEST);
+    }
+
     public ResponseEntity<ResponseData<String>> dataExists() {
         return prepareResponse(MessageKey.DATA_EXISTS, HttpStatus.BAD_REQUEST);
     }
@@ -62,7 +66,10 @@ public class MessageSingleton {
         return prepareResponse(MessageKey.SUCCESS, HttpStatus.OK);
     }
 
-    public ResponseEntity<ResponseData<String>> noDataFound() {
+    public ResponseEntity<ResponseData<String>> noDataFound(String data) {
+        return prepareResponse(MessageKey.DATA_NOT_FOUND+data, HttpStatus.NOT_FOUND);
+    }
+   public ResponseEntity<ResponseData<String>> noDataFound() {
         return prepareResponse(MessageKey.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 

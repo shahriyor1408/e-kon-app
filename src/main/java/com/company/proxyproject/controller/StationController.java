@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static com.company.proxyproject.constants.AppConstants.API_VERSION;
 
 /**
@@ -27,6 +29,11 @@ public class StationController {
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> create(@Valid @RequestBody StationCreateDto dto) {
         return service.create(dto);
+    }
+
+    @PostMapping(value = "/createByArray", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> create(@Valid @RequestBody List<StationCreateDto> dtos) {
+        return service.createByArray(dtos);
     }
 
     @GetMapping("/get/{id}")
