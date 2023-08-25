@@ -74,8 +74,11 @@ public class MessageSingleton {
         return prepareResponse(MessageKey.INVALID_DATA);
     }
 
-    public ResponseEntity<ResponseData<String>> operationFailed(String message) {
-        return prepareResponse(message, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseData<String>> operationFailed() {
+        return prepareResponse(MessageKey.OPERATION_FAILED, HttpStatus.BAD_REQUEST);
+    }
+    public ResponseEntity<Object> operationFailed(String data) {
+        return prepareResponse(Map.of("error",data),MessageKey.OPERATION_FAILED, HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<Object> userNotFoundForStation(String stationName) {

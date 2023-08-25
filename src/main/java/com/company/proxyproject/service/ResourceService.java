@@ -56,7 +56,7 @@ public class ResourceService {
                     .name(station.getName())
                     .build());
         } catch (Exception e) {
-            return messageSingleton.operationFailed(e.getLocalizedMessage());
+            return messageSingleton.operationFailed(e.getMessage());
         }
     }
 
