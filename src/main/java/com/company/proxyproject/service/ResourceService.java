@@ -125,6 +125,7 @@ public class ResourceService {
             ResponseEntity<SingleCurrentData> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(getHttpHeaders()), SingleCurrentData.class);
             CurrentDataResponseBody body = Objects.requireNonNull(response.getBody()).getData();
             body.setId(null);
+            body.setObjectId(station.getObjectId());
             body.setName(station.getName());
             for (SensorData sensorDatum : body.getSensors()) {
                 sensorDatum.setDirection(SensorDirection.getByValue(sensorDatum.getDirection()).toString());
