@@ -23,7 +23,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "stations")
 public class Station extends Auditable {
-
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_stations_id")
     @SequenceGenerator(allocationSize = 1, name = "seq_station_id", sequenceName = "seq_stations_id")

@@ -47,7 +47,7 @@ public class FieldService {
 
     @Transactional
     public ResponseEntity<?> get(@NonNull Long id) {
-        Optional<Field> fieldOpt = repository.findById(id);
+        Optional<Field> fieldOpt = repository.findByObjectId(id);
         if (fieldOpt.isEmpty()) {
             logService.logInternal("operation failed due to no field found by object id: %s".formatted(id), LogType.FIELD, "/field/get");
             return messageSingleton.noDataFound();

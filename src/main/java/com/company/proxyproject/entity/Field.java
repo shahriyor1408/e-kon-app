@@ -25,6 +25,7 @@ import javax.persistence.*;
 @Table(name = "fields")
 public class Field extends Auditable {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_fields_id")
     @SequenceGenerator(allocationSize = 1, name = "seq_fields_id", sequenceName = "seq_fields_id")

@@ -61,7 +61,7 @@ public class StationService {
 
     @Transactional
     public ResponseEntity<?> get(@NonNull Long id) {
-        Optional<Station> stationOpt = repository.findById(id);
+        Optional<Station> stationOpt = repository.findByObjectId(id);
         if (stationOpt.isEmpty()) {
             logService.logInternal("operation failed no due to station found by id: %s".formatted(id), LogType.STATION, "/station/get");
             return messageSingleton.noDataFound();

@@ -36,9 +36,9 @@ public class StationController {
         return service.createByArray(dtos);
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<?> get(@PathVariable Long id) {
-        return service.get(id);
+    @GetMapping("/get/{objectId}")
+    public ResponseEntity<?> get(@PathVariable Long objectId) {
+        return service.get(objectId);
     }
 
     @GetMapping("/getAll")
@@ -51,8 +51,8 @@ public class StationController {
         return service.update(dto);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        return service.delete(id);
-    }
+//    @DeleteMapping(value = "/delete/{id}")
+//    public ResponseEntity<?> delete(@PathVariable Long id) {
+//        return service.delete(id);
+//    }
 }

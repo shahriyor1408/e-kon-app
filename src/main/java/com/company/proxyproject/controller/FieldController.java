@@ -28,9 +28,9 @@ public class FieldController {
         return service.create(fieldCreateDto);
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<?> get(@PathVariable Long id) {
-        return service.get(id);
+    @GetMapping("/get/{fieldId}")
+    public ResponseEntity<?> get(@PathVariable Long fieldId) {
+        return service.get(fieldId);
     }
 
     @GetMapping("/getAll")
@@ -43,8 +43,8 @@ public class FieldController {
         return service.update(dto);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestParam(name = "id") Long id) {
-        return service.delete(id);
-    }
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<?> delete(@RequestParam(name = "id") Long id) {
+//        return service.delete(id);
+//    }
 }
