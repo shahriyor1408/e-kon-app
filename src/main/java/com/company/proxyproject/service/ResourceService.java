@@ -4,8 +4,11 @@ import com.company.proxyproject.common.MessageSingleton;
 import com.company.proxyproject.constants.AppConstants;
 import com.company.proxyproject.constants.enums.SensorDirection;
 import com.company.proxyproject.dto.request.GetHistory;
+import com.company.proxyproject.dto.response.CurrentDataResponseBody;
 import com.company.proxyproject.dto.response.GetCurrentsResponse;
 import com.company.proxyproject.dto.response.GetHistoryResponse;
+import com.company.proxyproject.dto.response.SensorData;
+import com.company.proxyproject.dto.response.SingleCurrentData;
 import com.company.proxyproject.entity.Field;
 import com.company.proxyproject.entity.Station;
 import com.company.proxyproject.repository.FieldRepository;
@@ -69,8 +72,7 @@ public class ResourceService {
                 "type", request.getSensorType(),
                 "stationId", station.getApiStationId()
         );
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(AppConstants.TOKEN, propertyService.getToken());
+        HttpHeaders httpHeaders = getHttpHeaders();
         return new HttpEntity<>(apiRequest, httpHeaders);
     }
 
@@ -80,26 +82,54 @@ public class ResourceService {
         if (fieldOpt.isEmpty()) {
             return messageSingleton.noDataFound();
         }
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(AppConstants.TOKEN, propertyService.getToken());
+        HttpHeaders httpHeaders = getHttpHeaders();
         HttpEntity<Map<String, Object>> http = new HttpEntity<>(httpHeaders);
         try {
             String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_FIELD_ID + fieldOpt.get().getApiFieldId();
             ResponseEntity<GetCurrentsResponse> response = restTemplate.exchange(url, HttpMethod.GET, http, GetCurrentsResponse.class);
-            List<GetCurrentsResponse.Body> data = Objects.requireNonNull(response.getBody()).getData();
-            data.removeIf(body -> {
-                Optional<Station> stationOpt = stationRepository.findByApiId(body.getId());
+            List<CurrentDataResponseBody> data = Objects.requireNonNull(response.getBody()).getData();
+            data.removeIf(currentDataResponseBody -> {
+                Optional<Station> stationOpt = stationRepository.findByApiId(currentDataResponseBody.getId());
                 stationOpt.ifPresent(station -> {
-                    body.setObjectId(station.getObjectId());
-                    for (GetCurrentsResponse.Sensor sensor : body.getSensors()) {
-                        sensor.setDirection(SensorDirection.getByValue(sensor.getDirection()).toString());
+                    currentDataResponseBody.setObjectId(station.getObjectId());
+                    for (SensorData sensorData : currentDataResponseBody.getSensors()) {
+                        sensorData.setDirection(SensorDirection.getByValue(sensorData.getDirection()).toString());
                     }
-                    body.setId(null);
-                    body.setName(station.getName());
+                    currentDataResponseBody.setId(null);
+                    currentDataResponseBody.setName(station.getName());
                 });
                 return stationOpt.isEmpty();
             });
             return messageSingleton.success(data);
+        } catch (Exception e) {
+            return messageSingleton.operationFailed(e.getLocalizedMessage());
+        }
+    }
+
+    @NotNull
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(AppConstants.TOKEN, propertyService.getToken());
+        return httpHeaders;
+    }
+
+    @Transactional
+    public ResponseEntity<?> getCurrentsByObjectId(Long id) {
+        Optional<Station> stationOpt = stationRepository.findByObjectId(id);
+        if (stationOpt.isEmpty()) {
+            return messageSingleton.noDataFound();
+        }
+        try {
+            Station station = stationOpt.get();
+            String url = AppConstants.URL + AppConstants.GET_CURRENT_BY_STATION_ID + station.getApiStationId();
+            ResponseEntity<SingleCurrentData> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(getHttpHeaders()), SingleCurrentData.class);
+            CurrentDataResponseBody body = Objects.requireNonNull(response.getBody()).getData();
+            body.setId(null);
+            body.setName(station.getName());
+            for (SensorData sensorDatum : body.getSensors()) {
+                sensorDatum.setDirection(SensorDirection.getByValue(sensorDatum.getDirection()).toString());
+            }
+            return messageSingleton.success(body);
         } catch (Exception e) {
             return messageSingleton.operationFailed(e.getLocalizedMessage());
         }
