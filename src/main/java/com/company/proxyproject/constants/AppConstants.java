@@ -11,4 +11,7 @@ public interface AppConstants {
 
     String GET_CURRENT_BY_FIELD_ID = "/getCurrentByFieldId/";
 
+    String GET_CURRENT_BY_STATION_ID = "/getCurrentByStationId/";
+
+
 }

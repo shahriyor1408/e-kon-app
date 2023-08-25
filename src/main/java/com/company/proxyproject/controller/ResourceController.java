@@ -30,4 +30,9 @@ public class ResourceController {
     public ResponseEntity<?> getCurrentsByFieldId(@PathVariable Long id) {
         return resourceService.getCurrentsByFieldId(id);
     }
+
+    @GetMapping("/get-currents-by-object-id/{id}")
+    public ResponseEntity<?> getCurrentsByObjectId(@PathVariable Long id) {
+        return resourceService.getCurrentsByObjectId(id);
+    }
 }
