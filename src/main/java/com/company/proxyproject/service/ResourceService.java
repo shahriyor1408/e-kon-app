@@ -7,7 +7,6 @@ import com.company.proxyproject.dto.response.GetCurrentsResponse;
 import com.company.proxyproject.dto.response.GetHistoryResponse;
 import com.company.proxyproject.entity.Field;
 import com.company.proxyproject.entity.Station;
-import com.company.proxyproject.exception.CustomException;
 import com.company.proxyproject.repository.FieldRepository;
 import com.company.proxyproject.repository.StationRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +53,7 @@ public class ResourceService {
                     .sensorValues(data)
                     .build());
         } catch (Exception e) {
-            throw new CustomException(e.getMessage());
+            return messageSingleton.operationFailed(e.getLocalizedMessage());
         }
     }
 
@@ -95,7 +94,7 @@ public class ResourceService {
             });
             return messageSingleton.success(data);
         } catch (Exception e) {
-            throw new CustomException(e.getMessage());
+            return messageSingleton.operationFailed(e.getLocalizedMessage());
         }
     }
 }
