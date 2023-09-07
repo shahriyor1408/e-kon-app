@@ -12,7 +12,9 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public  class SensorData implements Serializable {
+public class SensorData implements Serializable {
+    private Long id;
+
     private String date;
 
     private SensorType type;
