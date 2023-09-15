@@ -5,7 +5,7 @@ public interface AppConstants {
     String DEVICE_ID = "device-id";
     String API_VERSION = "/api/v1";
 
-    String URL = "https://api.e-kon.uz:443/api/v1/sensorReading/third-party-app";
+    String URL = "http://localhost:8095/api/v1/sensorReading/third-party-app";
 
     String GET_HISTORY = "/getHistory";
 
